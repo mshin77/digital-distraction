@@ -1,0 +1,3 @@
+"0",""
+"0","ggpredict(main.AI5, terms = c(""time"", ""group"")) %>% plot() + "
+"0","  scale_x_continuous(breaks = c(0, 1)) "

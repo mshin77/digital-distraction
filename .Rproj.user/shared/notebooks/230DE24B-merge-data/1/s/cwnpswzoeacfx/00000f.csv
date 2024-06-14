@@ -1,0 +1,5 @@
+"0","df <- left_join(pre, post, by = ""id"", suffix = c("".pre"", "".post""))"
+"0",""
+"0","df <- df %>% filter(!is.na(time.post))"
+"0",""
+"0","write.xlsx(df, ""df.xlsx"")"

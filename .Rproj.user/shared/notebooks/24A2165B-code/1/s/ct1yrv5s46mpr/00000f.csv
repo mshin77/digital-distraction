@@ -1,0 +1,2 @@
+"0","main.ER2 <- clmm(ER2 ~ group + time + group:time +"
+"0","                   (1 | student), data = data, Hess=TRUE, nAGQ=7)"

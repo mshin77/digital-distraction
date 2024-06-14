@@ -1,0 +1,15 @@
+```{r}
+library(readxl)
+library(openxlsx)
+
+pre <- read_excel("data/pre.xlsx")
+post <- read_excel("data/post.xlsx")
+```
+
+```{r}
+df <- left_join(pre, post, by = "id", suffix = c(".pre", ".post"))
+
+df <- df %>% filter(!is.na(time.post))
+
+write.xlsx(df, "data/df.xlsx")
+```
