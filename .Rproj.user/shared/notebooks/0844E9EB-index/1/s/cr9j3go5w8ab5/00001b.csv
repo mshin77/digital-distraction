@@ -1,8 +1,0 @@
-"0","sum <- summary(main.MT4)"
-"0","cf <- sum$coefficients %>% as.data.frame() "
-"0",""
-"0","cf[1:4, 1] <- cf[1:4, 1]*-1"
-"0","cf[1:4, 3] <- cf[1:4, 3]*-1"
-"0","rownames(cf)[1:4] <- c(""rating > 4"", ""rating > 3"", ""rating > 2"", ""rating > 1"")"
-"0","cf %>% mutate(odd_ratio = exp(Estimate)) %>% "
-"0","  mutate_if(is.numeric, ~ round(., 3))"
