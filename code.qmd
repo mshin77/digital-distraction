@@ -57,6 +57,52 @@ demo_tbl_ft <- as_flex_table(demo_tbl)
 demo_tbl_ft 
 ```
 
+
+## Internal Consistency 
+
+#### Calculate Cronbach's alpha (pre-test)
+
+```{r, eval=FALSE}
+#| code-fold: false
+calculate_alpha <- function(data, prefix) {
+  category_cols <- grep(paste0("^", prefix), colnames(data), value = TRUE)
+  alpha_result <- alpha(data[, category_cols])
+  cat(paste("Cronbach's alpha for", prefix, ":", format(alpha_result$total$raw_alpha, digits = 2, nsmall = 2)), "\n")
+  return(alpha_result)
+}
+
+alpha_AI_pre <- data %>% filter(time == "0") %>% calculate_alpha("AI")
+alpha_OV_pre <- data %>% filter(time == "0") %>% calculate_alpha("OV")
+alpha_MT_pre <- data %>% filter(time == "0") %>% calculate_alpha("MT")
+alpha_ER_pre <- data %>% filter(time == "0") %>% calculate_alpha("ER")
+```
+
+```{r}
+alpha_AI_pre 
+alpha_OV_pre 
+alpha_MT_pre 
+alpha_ER_pre
+```
+
+
+#### Calculate Cronbach's alpha (post-test)
+
+```{r, eval=FALSE}
+#| code-fold: false
+
+alpha_AI_post <- data %>% filter(time == "1") %>% calculate_alpha("AI")
+alpha_OV_post <- data %>% filter(time == "1") %>% calculate_alpha("OV")
+alpha_MT_post <- data %>% filter(time == "1") %>% calculate_alpha("MT")
+alpha_ER_post <- data %>% filter(time == "1") %>% calculate_alpha("ER")
+```
+
+```{r}
+alpha_AI_post 
+alpha_OV_post 
+alpha_MT_post 
+alpha_ER_post 
+```
+
 ```{r, eval=FALSE}
 data <- data %>% mutate(across(AI1:ER4, as.factor))
 ```
