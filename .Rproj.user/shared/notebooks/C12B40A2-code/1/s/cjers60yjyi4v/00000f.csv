@@ -1,2 +1,0 @@
-"0","main.AI5 <- clmm(AI5 ~ group + time + group:time +"
-"0","                    (1 | student), data = data, Hess=TRUE, nAGQ=7)"

@@ -2,7 +2,7 @@
 title: ''
 format:
   html:
-    code-fold: false
+    code-fold: true
     code-tools: true
 ---
 
@@ -11,14 +11,17 @@ format:
 ## Set-Up
 
 ```{r}
+#| code-fold: false
 suppressPackageStartupMessages({
   library(readxl)
   library(gtsummary)
-  library(officer)
   library(flextable)
   library(ggeffects)
   library(ggplot2)
   library(dplyr)
+  library(tidyr)
+  library(reshape2)
+  library(stats)
   library(ordinal)
   library(texreg)
 })
@@ -26,44 +29,11 @@ suppressPackageStartupMessages({
 load("data/digital_distraction_data.RData")
 ```
 
-## Demographic Profiles
-
-```{r, eval=FALSE}
-data$group <- as.factor(data$group)
-
-demo_tbl <- data %>%
-  mutate(group = case_when(
-    group == "1" ~ "Treatment",
-    group == "0" ~ "Control"
-  )) %>%
-    rename(
-    grade = D1,
-    gender = D2, 
-    non_academic = D3,
-    device = D4_multi,
-    most_distracted = D5,
-    distraction_source = D6, 
-    teacher_authority = D7
-  ) %>%
-  filter(time == "1") %>%
-  dplyr::select(group, period, grade, gender, non_academic, device, most_distracted, distraction_source, teacher_authority) %>%
-  tbl_summary(by = group,
-              percent = "column") 
-
-demo_tbl_ft <- as_flex_table(demo_tbl)
-```
-
-```{r}
-demo_tbl_ft 
-```
-
-
 ## Internal Consistency 
 
-#### Calculate Cronbach's alpha (pre-test)
+#### Calculate Cronbach's alpha 
 
 ```{r, eval=FALSE}
-#| code-fold: false
 calculate_alpha <- function(data, prefix) {
   category_cols <- grep(paste0("^", prefix), colnames(data), value = TRUE)
   alpha_result <- alpha(data[, category_cols])
@@ -71,49 +41,123 @@ calculate_alpha <- function(data, prefix) {
   return(alpha_result)
 }
 
-alpha_AI_pre <- data %>% filter(time == "0") %>% calculate_alpha("AI")
-alpha_OV_pre <- data %>% filter(time == "0") %>% calculate_alpha("OV")
-alpha_MT_pre <- data %>% filter(time == "0") %>% calculate_alpha("MT")
-alpha_ER_pre <- data %>% filter(time == "0") %>% calculate_alpha("ER")
+data_filtered_pre <- data %>% filter(time == "0")
+
+alpha_AI_pre <- calculate_alpha(data_filtered_pre, "AI")
+alpha_OV_pre <- calculate_alpha(data_filtered_pre, "OV")
+alpha_MT_pre <- calculate_alpha(data_filtered_pre, "MT")
+alpha_ER_pre <- calculate_alpha(data_filtered_pre, "ER")
+
+data_filtered_post <- data %>% filter(time == "1")
+
+alpha_AI_post <- calculate_alpha(data_filtered_post, "AI")
+alpha_OV_post <- calculate_alpha(data_filtered_post, "OV")
+alpha_MT_post <- calculate_alpha(data_filtered_post, "MT")
+alpha_ER_post <- calculate_alpha(data_filtered_post, "ER")
 ```
+
+#### Attention Impulsiveness (AI)
 
 ```{r}
-alpha_AI_pre 
-alpha_OV_pre 
-alpha_MT_pre 
-alpha_ER_pre
-```
-
-
-#### Calculate Cronbach's alpha (post-test)
-
-```{r, eval=FALSE}
 #| code-fold: false
-
-alpha_AI_post <- data %>% filter(time == "1") %>% calculate_alpha("AI")
-alpha_OV_post <- data %>% filter(time == "1") %>% calculate_alpha("OV")
-alpha_MT_post <- data %>% filter(time == "1") %>% calculate_alpha("MT")
-alpha_ER_post <- data %>% filter(time == "1") %>% calculate_alpha("ER")
+alpha_AI_pre$total$raw_alpha %>% round(2)
 ```
 
 ```{r}
-alpha_AI_post 
-alpha_OV_post 
-alpha_MT_post 
-alpha_ER_post 
+#| code-fold: false
+alpha_AI_post$total$raw_alpha %>% round(2)
 ```
 
+#### Online Vigilance (OV)
+
+```{r}
+#| code-fold: false
+alpha_OV_pre$total$raw_alpha %>% round(2)
+```
+
+```{r}
+#| code-fold: false
+alpha_OV_post$total$raw_alpha %>% round(2)
+```
+
+#### Multitasking (MT)
+
+```{r}
+#| code-fold: false
+alpha_MT_pre$total$raw_alpha %>% round(2)
+```
+
+```{r}
+#| code-fold: false
+alpha_MT_post$total$raw_alpha %>% round(2)
+```
+
+#### Emotion Regulation (ER)
+
+```{r}
+#| code-fold: false
+alpha_ER_pre$total$raw_alpha %>% round(2)
+```
+
+```{r}
+#| code-fold: false
+alpha_ER_post$total$raw_alpha %>% round(2)
+```
+
+## Contingency Table 
+
 ```{r, eval=FALSE}
-data <- data %>% mutate(across(AI1:ER4, as.factor))
+selected_data <- data %>% select(student, group, time, AI1:ER4)
+
+long_data <- melt(selected_data, id.vars = c('student', 'group', 'time'), variable.name = 'question', value.name = 'response')
+
+table <- long_data %>%
+  mutate(time = case_when(
+    time == "0" ~ "Pre-test",
+    time == "1" ~ "Post-test"
+    )) %>%
+  mutate(time = factor(time, levels = c("Pre-test", "Post-test"))) %>% 
+  mutate(group = case_when(
+    group == "0" ~ "Control",
+    group == "1" ~ "Treatment"
+  )) %>%
+  group_by(question, group, time, response) %>%
+  summarise(Count = n(), .groups = 'drop') %>%
+  group_by(question, group, time) %>%
+  mutate(Percentage = Count / sum(Count) * 100) %>%
+  mutate(Freq_Percent = paste0(Count, " (", round(Percentage, 1), "%)")) %>%
+  select(-Count, -Percentage) %>%
+  pivot_wider(names_from = response, values_from = Freq_Percent, values_fill = list(Freq_Percent = "0 (0%)")) %>%
+  ungroup()
+
+table_flex <- table %>%
+  flextable() %>%
+  merge_v(j = ~ question) %>%
+  merge_v(j = ~ group) %>%
+  theme_vanilla() %>%
+  autofit()
+```
+
+```{r}
+#| code-fold: false
+table_flex
 ```
 
 ## AI
 
 #### Attention Impulsiveness (AI)
 
+```{r}
+screenreg(list(main.AI1, main.AI2, main.AI3, main.AI4, main.AI5), 
+          custom.model.names = c("AI 1", "AI 2", "AI 3", "AI 4", "AI 5"))
+```
+
 **AI1**
 
 ```{r, eval=FALSE}
+
+data <- data %>% mutate(across(AI1:ER4, as.factor))
+
 main.AI1 <- clmm(AI1 ~ group + time + group:time +
                     (1 | student), data = data, Hess=TRUE, nAGQ=7)
 ```
@@ -217,14 +261,14 @@ ggpredict(main.AI5, terms = c("time", "group")) %>% plot() +
   scale_x_continuous(breaks = c(0, 1)) 
 ```
 
-```{r}
-screenreg(list(main.AI1, main.AI2, main.AI3, main.AI4, main.AI5), 
-          custom.model.names = c("AI 1", "AI 2", "AI 3", "AI 4", "AI 5"))
-```
-
 ## OV
 
 #### Online Vigilance (OV)
+
+```{r}
+screenreg(list(main.OV1, main.OV2, main.OV3), 
+          custom.model.names = c("OV 1", "OV 2", "OV 3"))
+```
 
 **OV1**
 
@@ -289,13 +333,14 @@ ggpredict(main.OV3, terms = c("time", "group")) %>% plot() +
   scale_x_continuous(breaks = c(0, 1)) 
 ```
 
-```{r}
-screenreg(list(main.OV1, main.OV2, main.OV3), 
-          custom.model.names = c("OV 1", "OV 2", "OV 3"))
-```
 ## MT
 
 #### Multitasking (MT)
+
+```{r}
+screenreg(list(main.MT1, main.MT2, main.MT3, main.MT4), 
+          custom.model.names = c("MT 1", "MT 2", "MT 3", "MT 4"))
+```
 
 **MT1**
 
@@ -381,14 +426,14 @@ ggpredict(main.MT4, terms = c("time", "group")) %>% plot() +
   scale_x_continuous(breaks = c(0, 1)) 
 ```
 
-```{r}
-screenreg(list(main.MT1, main.MT2, main.MT3, main.MT4), 
-          custom.model.names = c("MT 1", "MT 2", "MT 3", "MT 4"))
-```
-
 ## ER
 
 #### Emotion Regulation (ER)
+
+```{r}
+screenreg(list(main.ER1, main.ER2, main.ER3, main.ER4), 
+          custom.model.names = c("ER 1", "ER 2", "ER 3", "ER 4"))
+```
 
 **ER1**
 
@@ -472,11 +517,6 @@ cf %>% mutate(odd_ratio = exp(Estimate)) %>%
 
 ggpredict(main.ER4, terms = c("time", "group")) %>% plot() + 
   scale_x_continuous(breaks = c(0, 1)) 
-```
-
-```{r}
-screenreg(list(main.ER1, main.ER2, main.ER3, main.ER4), 
-          custom.model.names = c("ER 1", "ER 2", "ER 3", "ER 4"))
 ```
 
 :::
