@@ -147,11 +147,6 @@ table_flex
 
 #### Attention Impulsiveness (AI)
 
-```{r}
-screenreg(list(main.AI1, main.AI2, main.AI3, main.AI4, main.AI5), 
-          custom.model.names = c("AI 1", "AI 2", "AI 3", "AI 4", "AI 5"))
-```
-
 **AI1**
 
 ```{r, eval=FALSE}
@@ -169,7 +164,7 @@ cf <- sum$coefficients %>% as.data.frame()
 
 cf[1:4, 1] <- cf[1:4, 1]*-1
 cf[1:4, 3] <- cf[1:4, 3]*-1
-rownames(cf)[1:4] <- c("rating > 4", "rating > 3", "rating > 2", "rating > 1")
+rownames(cf)[1:4] <- c("4|5", "3|4", "2|3", "1|2")
 cf %>% mutate(odd_ratio = exp(Estimate)) %>% 
   mutate_if(is.numeric, ~ round(., 3))
 
@@ -190,7 +185,7 @@ cf <- sum$coefficients %>% as.data.frame()
 
 cf[1:4, 1] <- cf[1:4, 1]*-1
 cf[1:4, 3] <- cf[1:4, 3]*-1
-rownames(cf)[1:4] <- c("rating > 4", "rating > 3", "rating > 2", "rating > 1")
+rownames(cf)[1:4] <- c("4|5", "3|4", "2|3", "1|2")
 cf %>% mutate(odd_ratio = exp(Estimate)) %>% 
   mutate_if(is.numeric, ~ round(., 3))
 
@@ -211,7 +206,7 @@ cf <- sum$coefficients %>% as.data.frame()
 
 cf[1:4, 1] <- cf[1:4, 1]*-1
 cf[1:4, 3] <- cf[1:4, 3]*-1
-rownames(cf)[1:4] <- c("rating > 4", "rating > 3", "rating > 2", "rating > 1")
+rownames(cf)[1:4] <- c("4|5", "3|4", "2|3", "1|2")
 cf %>% mutate(odd_ratio = exp(Estimate)) %>% 
   mutate_if(is.numeric, ~ round(., 3))
 
@@ -232,7 +227,7 @@ cf <- sum$coefficients %>% as.data.frame()
 
 cf[1:4, 1] <- cf[1:4, 1]*-1
 cf[1:4, 3] <- cf[1:4, 3]*-1
-rownames(cf)[1:4] <- c("rating > 4", "rating > 3", "rating > 2", "rating > 1")
+rownames(cf)[1:4] <- c("4|5", "3|4", "2|3", "1|2")
 cf %>% mutate(odd_ratio = exp(Estimate)) %>% 
   mutate_if(is.numeric, ~ round(., 3))
 
@@ -253,7 +248,7 @@ cf <- sum$coefficients %>% as.data.frame()
 
 cf[1:4, 1] <- cf[1:4, 1]*-1
 cf[1:4, 3] <- cf[1:4, 3]*-1
-rownames(cf)[1:4] <- c("rating > 4", "rating > 3", "rating > 2", "rating > 1")
+rownames(cf)[1:4] <- c("4|5", "3|4", "2|3", "1|2")
 cf %>% mutate(odd_ratio = exp(Estimate)) %>% 
   mutate_if(is.numeric, ~ round(., 3))
 
@@ -264,11 +259,6 @@ ggpredict(main.AI5, terms = c("time", "group")) %>% plot() +
 ## OV
 
 #### Online Vigilance (OV)
-
-```{r}
-screenreg(list(main.OV1, main.OV2, main.OV3), 
-          custom.model.names = c("OV 1", "OV 2", "OV 3"))
-```
 
 **OV1**
 
@@ -283,7 +273,7 @@ cf <- sum$coefficients %>% as.data.frame()
 
 cf[1:4, 1] <- cf[1:4, 1]*-1
 cf[1:4, 3] <- cf[1:4, 3]*-1
-rownames(cf)[1:4] <- c("rating > 4", "rating > 3", "rating > 2", "rating > 1")
+rownames(cf)[1:4] <- c("4|5", "3|4", "2|3", "1|2")
 cf %>% mutate(odd_ratio = exp(Estimate)) %>% 
   mutate_if(is.numeric, ~ round(., 3))
 
@@ -304,7 +294,7 @@ cf <- sum$coefficients %>% as.data.frame()
 
 cf[1:4, 1] <- cf[1:4, 1]*-1
 cf[1:4, 3] <- cf[1:4, 3]*-1
-rownames(cf)[1:4] <- c("rating > 4", "rating > 3", "rating > 2", "rating > 1")
+rownames(cf)[1:4] <- c("4|5", "3|4", "2|3", "1|2")
 cf %>% mutate(odd_ratio = exp(Estimate)) %>% 
   mutate_if(is.numeric, ~ round(., 3))
 
@@ -325,7 +315,7 @@ cf <- sum$coefficients %>% as.data.frame()
 
 cf[1:4, 1] <- cf[1:4, 1]*-1
 cf[1:4, 3] <- cf[1:4, 3]*-1
-rownames(cf)[1:4] <- c("rating > 4", "rating > 3", "rating > 2", "rating > 1")
+rownames(cf)[1:4] <- c("4|5", "3|4", "2|3", "1|2")
 cf %>% mutate(odd_ratio = exp(Estimate)) %>% 
   mutate_if(is.numeric, ~ round(., 3))
 
@@ -336,11 +326,6 @@ ggpredict(main.OV3, terms = c("time", "group")) %>% plot() +
 ## MT
 
 #### Multitasking (MT)
-
-```{r}
-screenreg(list(main.MT1, main.MT2, main.MT3, main.MT4), 
-          custom.model.names = c("MT 1", "MT 2", "MT 3", "MT 4"))
-```
 
 **MT1**
 
@@ -355,7 +340,7 @@ cf <- sum$coefficients %>% as.data.frame()
 
 cf[1:4, 1] <- cf[1:4, 1]*-1
 cf[1:4, 3] <- cf[1:4, 3]*-1
-rownames(cf)[1:4] <- c("rating > 4", "rating > 3", "rating > 2", "rating > 1")
+rownames(cf)[1:4] <- c("4|5", "3|4", "2|3", "1|2")
 cf %>% mutate(odd_ratio = exp(Estimate)) %>% 
   mutate_if(is.numeric, ~ round(., 3))
 
@@ -376,7 +361,7 @@ cf <- sum$coefficients %>% as.data.frame()
 
 cf[1:4, 1] <- cf[1:4, 1]*-1
 cf[1:4, 3] <- cf[1:4, 3]*-1
-rownames(cf)[1:4] <- c("rating > 4", "rating > 3", "rating > 2", "rating > 1")
+rownames(cf)[1:4] <- c("4|5", "3|4", "2|3", "1|2")
 cf %>% mutate(odd_ratio = exp(Estimate)) %>% 
   mutate_if(is.numeric, ~ round(., 3))
 
@@ -397,7 +382,7 @@ cf <- sum$coefficients %>% as.data.frame()
 
 cf[1:4, 1] <- cf[1:4, 1]*-1
 cf[1:4, 3] <- cf[1:4, 3]*-1
-rownames(cf)[1:4] <- c("rating > 4", "rating > 3", "rating > 2", "rating > 1")
+rownames(cf)[1:4] <- c("4|5", "3|4", "2|3", "1|2")
 cf %>% mutate(odd_ratio = exp(Estimate)) %>% 
   mutate_if(is.numeric, ~ round(., 3))
 
@@ -418,7 +403,7 @@ cf <- sum$coefficients %>% as.data.frame()
 
 cf[1:4, 1] <- cf[1:4, 1]*-1
 cf[1:4, 3] <- cf[1:4, 3]*-1
-rownames(cf)[1:4] <- c("rating > 4", "rating > 3", "rating > 2", "rating > 1")
+rownames(cf)[1:4] <- c("4|5", "3|4", "2|3", "1|2")
 cf %>% mutate(odd_ratio = exp(Estimate)) %>% 
   mutate_if(is.numeric, ~ round(., 3))
 
@@ -429,11 +414,6 @@ ggpredict(main.MT4, terms = c("time", "group")) %>% plot() +
 ## ER
 
 #### Emotion Regulation (ER)
-
-```{r}
-screenreg(list(main.ER1, main.ER2, main.ER3, main.ER4), 
-          custom.model.names = c("ER 1", "ER 2", "ER 3", "ER 4"))
-```
 
 **ER1**
 
@@ -448,7 +428,7 @@ cf <- sum$coefficients %>% as.data.frame()
 
 cf[1:4, 1] <- cf[1:4, 1]*-1
 cf[1:4, 3] <- cf[1:4, 3]*-1
-rownames(cf)[1:4] <- c("rating > 4", "rating > 3", "rating > 2", "rating > 1")
+rownames(cf)[1:4] <- c("4|5", "3|4", "2|3", "1|2")
 cf %>% mutate(odd_ratio = exp(Estimate)) %>% 
   mutate_if(is.numeric, ~ round(., 3))
 
@@ -469,7 +449,7 @@ cf <- sum$coefficients %>% as.data.frame()
 
 cf[1:4, 1] <- cf[1:4, 1]*-1
 cf[1:4, 3] <- cf[1:4, 3]*-1
-rownames(cf)[1:4] <- c("rating > 4", "rating > 3", "rating > 2", "rating > 1")
+rownames(cf)[1:4] <- c("4|5", "3|4", "2|3", "1|2")
 cf %>% mutate(odd_ratio = exp(Estimate)) %>% 
   mutate_if(is.numeric, ~ round(., 3))
 
@@ -490,7 +470,7 @@ cf <- sum$coefficients %>% as.data.frame()
 
 cf[1:4, 1] <- cf[1:4, 1]*-1
 cf[1:4, 3] <- cf[1:4, 3]*-1
-rownames(cf)[1:4] <- c("rating > 4", "rating > 3", "rating > 2", "rating > 1")
+rownames(cf)[1:4] <- c("4|5", "3|4", "2|3", "1|2")
 cf %>% mutate(odd_ratio = exp(Estimate)) %>% 
   mutate_if(is.numeric, ~ round(., 3))
 
@@ -511,7 +491,7 @@ cf <- sum$coefficients %>% as.data.frame()
 
 cf[1:4, 1] <- cf[1:4, 1]*-1
 cf[1:4, 3] <- cf[1:4, 3]*-1
-rownames(cf)[1:4] <- c("rating > 4", "rating > 3", "rating > 2", "rating > 1")
+rownames(cf)[1:4] <- c("4|5", "3|4", "2|3", "1|2")
 cf %>% mutate(odd_ratio = exp(Estimate)) %>% 
   mutate_if(is.numeric, ~ round(., 3))
 
