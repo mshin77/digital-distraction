@@ -1,14 +1,21 @@
 ---
-title: ''
+title: 'Preventing Digital Distractions in Secondary Classrooms: A Quasi-Experimental Study'
+date: "`r Sys.Date()`"
 format:
   html:
     code-fold: true
     code-tools: true
 ---
 
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE)
+```
+
 ::: panel-tabset
 
-## Set-Up
+## Internal Consistency 
+
+#### Set-Up
 
 ```{r}
 #| code-fold: false
@@ -28,8 +35,6 @@ suppressPackageStartupMessages({
 
 load("data/digital_distraction_data.RData")
 ```
-
-## Internal Consistency 
 
 #### Calculate Cronbach's alpha 
 
@@ -104,7 +109,7 @@ alpha_ER_pre$total$raw_alpha %>% round(2)
 alpha_ER_post$total$raw_alpha %>% round(2)
 ```
 
-## Contingency Table 
+## Frequency Table 
 
 ```{r, eval=FALSE}
 selected_data <- data %>% select(student, group, time, AI1:ER4)
@@ -143,6 +148,40 @@ table_flex <- table %>%
 table_flex
 ```
 
+## Estimated Minutes 
+
+#### Estimated Minutes of Digital Distractions 
+
+```{r, eval=FALSE}
+data <- data %>%
+  mutate(D3_cat = case_when(
+    D3 == "Less than 10 minutes" ~ "1",
+    D3 == "10-20 minutes" ~ "2",
+    D3 == "20-30 minutes" ~ "3",
+    D3 == "30-40 minutes" ~ "4",
+    D3 == "More than 40 minutes" ~ "5"
+    ))
+
+data <- data %>% mutate(across(c(D3_cat, AI1:ER4), as.factor))
+
+main.D3_cat <- clmm(D3_cat ~ group + time + group:time +
+                    (1 | student), data = data, Hess=TRUE, nAGQ=7)
+```
+
+```{r}
+sum <- summary(main.D3_cat)
+cf <- sum$coefficients %>% as.data.frame() 
+
+cf[1:4, 1] <- cf[1:4, 1]*-1
+cf[1:4, 3] <- cf[1:4, 3]*-1
+rownames(cf)[1:4] <- c("4|5", "3|4", "2|3", "1|2")
+cf %>% mutate(odd_ratio = exp(Estimate)) %>% 
+  mutate_if(is.numeric, ~ round(., 3))
+
+ggpredict(main.D3_cat, terms = c("time", "group")) %>% plot() + 
+  scale_x_continuous(breaks = c(0, 1)) 
+```
+
 ## AI
 
 #### Attention Impulsiveness (AI)
@@ -150,9 +189,6 @@ table_flex
 **AI1**
 
 ```{r, eval=FALSE}
-
-data <- data %>% mutate(across(AI1:ER4, as.factor))
-
 main.AI1 <- clmm(AI1 ~ group + time + group:time +
                     (1 | student), data = data, Hess=TRUE, nAGQ=7)
 ```
