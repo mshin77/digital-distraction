@@ -8,7 +8,7 @@ format:
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE, warning = FALSE)
+knitr::opts_chunk$set(warning = FALSE, error = FALSE, message = FALSE)
 ```
 
 ::: panel-tabset
@@ -18,19 +18,20 @@ knitr::opts_chunk$set(echo = TRUE, warning = FALSE)
 #### Set-Up
 
 ```{r}
-#| code-fold: false
 suppressPackageStartupMessages({
   library(readxl)
   library(gtsummary)
+  library(reshape2)
+  library(tidyr)
+  library(officer)
   library(flextable)
   library(ggeffects)
   library(ggplot2)
   library(dplyr)
-  library(tidyr)
-  library(reshape2)
-  library(stats)
   library(ordinal)
+  library(VGAM)
   library(texreg)
+  library(psych)
 })
 
 load("data/digital_distraction_data.RData")
@@ -148,9 +149,10 @@ table_flex <- table %>%
 table_flex
 ```
 
-## Estimated Minutes 
 
-#### Estimated Minutes of Digital Distractions 
+## Estimated Minutes
+
+#### Preprocess data
 
 ```{r, eval=FALSE}
 data <- data %>%
@@ -163,18 +165,38 @@ data <- data %>%
     ))
 
 data <- data %>% mutate(across(c(D3_cat, AI1:ER4), as.factor))
+```
 
+#### Estimated Minutes of Digital Distractions
+
+```{r, eval=FALSE}
 main.D3_cat <- clmm(D3_cat ~ group + time + group:time +
-                    (1 | student), data = data, Hess=TRUE, nAGQ=7)
+                    (1 | student), data = data, Hess=TRUE, nAGQ=7) 
 ```
 
 ```{r}
-sum <- summary(main.D3_cat)
-cf <- sum$coefficients %>% as.data.frame() 
+reverse_thresholds <- function(data) {
+  
+  coef_labels <- c("intercept (Y>1)", "intercept (Y>2)", "intercept (Y>3)", "intercept (Y>4)")
 
-cf[1:4, 1] <- cf[1:4, 1]*-1
-cf[1:4, 3] <- cf[1:4, 3]*-1
-rownames(cf)[1:4] <- c("4|5", "3|4", "2|3", "1|2")
+    if (length(coef_labels) != 4) {
+    stop("coef_labels must have exactly 4 elements.")
+  }
+  
+  sum <- summary(data)
+  
+  cf <- as.data.frame(sum$coefficients)
+  
+  cf[1:4, 1] <- cf[1:4, 1] * -1
+  cf[1:4, 3] <- cf[1:4, 3] * -1
+  
+  rownames(cf)[1:4] <- coef_labels
+  
+  return(cf)
+}
+
+cf <- reverse_thresholds(main.D3_cat)
+
 cf %>% mutate(odd_ratio = exp(Estimate)) %>% 
   mutate_if(is.numeric, ~ round(., 3))
 
@@ -190,17 +212,12 @@ ggpredict(main.D3_cat, terms = c("time", "group")) %>% plot() +
 
 ```{r, eval=FALSE}
 main.AI1 <- clmm(AI1 ~ group + time + group:time +
-                    (1 | student), data = data, Hess=TRUE, nAGQ=7)
+                    (1 | student), data = data, Hess=TRUE, nAGQ=7) 
 ```
 
-
 ```{r}
-sum <- summary(main.AI1)
-cf <- sum$coefficients %>% as.data.frame() 
+cf <- reverse_thresholds(main.AI1)
 
-cf[1:4, 1] <- cf[1:4, 1]*-1
-cf[1:4, 3] <- cf[1:4, 3]*-1
-rownames(cf)[1:4] <- c("4|5", "3|4", "2|3", "1|2")
 cf %>% mutate(odd_ratio = exp(Estimate)) %>% 
   mutate_if(is.numeric, ~ round(., 3))
 
@@ -212,16 +229,12 @@ ggpredict(main.AI1, terms = c("time", "group")) %>% plot() +
 
 ```{r, eval=FALSE}
 main.AI2 <- clmm(AI2 ~ group + time + group:time +
-                    (1 | student), data = data, Hess=TRUE, nAGQ=7)
+                    (1 | student), data = data, Hess=TRUE, nAGQ=7) 
 ```
 
 ```{r}
-sum <- summary(main.AI2)
-cf <- sum$coefficients %>% as.data.frame() 
+cf <- reverse_thresholds(main.AI2)
 
-cf[1:4, 1] <- cf[1:4, 1]*-1
-cf[1:4, 3] <- cf[1:4, 3]*-1
-rownames(cf)[1:4] <- c("4|5", "3|4", "2|3", "1|2")
 cf %>% mutate(odd_ratio = exp(Estimate)) %>% 
   mutate_if(is.numeric, ~ round(., 3))
 
@@ -233,16 +246,12 @@ ggpredict(main.AI2, terms = c("time", "group")) %>% plot() +
 
 ```{r, eval=FALSE}
 main.AI3 <- clmm(AI3 ~ group + time + group:time +
-                    (1 | student), data = data, Hess=TRUE, nAGQ=7)
+                    (1 | student), data = data, Hess=TRUE, nAGQ=7) 
 ```
 
 ```{r}
-sum <- summary(main.AI3)
-cf <- sum$coefficients %>% as.data.frame() 
+cf <- reverse_thresholds(main.AI3)
 
-cf[1:4, 1] <- cf[1:4, 1]*-1
-cf[1:4, 3] <- cf[1:4, 3]*-1
-rownames(cf)[1:4] <- c("4|5", "3|4", "2|3", "1|2")
 cf %>% mutate(odd_ratio = exp(Estimate)) %>% 
   mutate_if(is.numeric, ~ round(., 3))
 
@@ -254,16 +263,12 @@ ggpredict(main.AI3, terms = c("time", "group")) %>% plot() +
 
 ```{r, eval=FALSE}
 main.AI4 <- clmm(AI4 ~ group + time + group:time +
-                    (1 | student), data = data, Hess=TRUE, nAGQ=7)
+                    (1 | student), data = data, Hess=TRUE, nAGQ=7) 
 ```
 
 ```{r}
-sum <- summary(main.AI4)
-cf <- sum$coefficients %>% as.data.frame() 
+cf <- reverse_thresholds(main.AI4)
 
-cf[1:4, 1] <- cf[1:4, 1]*-1
-cf[1:4, 3] <- cf[1:4, 3]*-1
-rownames(cf)[1:4] <- c("4|5", "3|4", "2|3", "1|2")
 cf %>% mutate(odd_ratio = exp(Estimate)) %>% 
   mutate_if(is.numeric, ~ round(., 3))
 
@@ -275,22 +280,19 @@ ggpredict(main.AI4, terms = c("time", "group")) %>% plot() +
 
 ```{r, eval=FALSE}
 main.AI5 <- clmm(AI5 ~ group + time + group:time +
-                    (1 | student), data = data, Hess=TRUE, nAGQ=7)
+                    (1 | student), data = data, Hess=TRUE, nAGQ=7) 
 ```
 
 ```{r}
-sum <- summary(main.AI5)
-cf <- sum$coefficients %>% as.data.frame() 
+cf <- reverse_thresholds(main.AI5)
 
-cf[1:4, 1] <- cf[1:4, 1]*-1
-cf[1:4, 3] <- cf[1:4, 3]*-1
-rownames(cf)[1:4] <- c("4|5", "3|4", "2|3", "1|2")
 cf %>% mutate(odd_ratio = exp(Estimate)) %>% 
   mutate_if(is.numeric, ~ round(., 3))
 
 ggpredict(main.AI5, terms = c("time", "group")) %>% plot() + 
   scale_x_continuous(breaks = c(0, 1)) 
 ```
+
 
 ## OV
 
@@ -300,16 +302,12 @@ ggpredict(main.AI5, terms = c("time", "group")) %>% plot() +
 
 ```{r, eval=FALSE}
 main.OV1 <- clmm(OV1 ~ group + time + group:time +
-                    (1 | student), data = data, Hess=TRUE, nAGQ=7)
+                    (1 | student), data = data, Hess=TRUE, nAGQ=7) 
 ```
 
 ```{r}
-sum <- summary(main.OV1)
-cf <- sum$coefficients %>% as.data.frame() 
+cf <- reverse_thresholds(main.OV1)
 
-cf[1:4, 1] <- cf[1:4, 1]*-1
-cf[1:4, 3] <- cf[1:4, 3]*-1
-rownames(cf)[1:4] <- c("4|5", "3|4", "2|3", "1|2")
 cf %>% mutate(odd_ratio = exp(Estimate)) %>% 
   mutate_if(is.numeric, ~ round(., 3))
 
@@ -321,16 +319,12 @@ ggpredict(main.OV1, terms = c("time", "group")) %>% plot() +
 
 ```{r, eval=FALSE}
 main.OV2 <- clmm(OV2 ~ group + time + group:time +
-                    (1 | student), data = data, Hess=TRUE, nAGQ=7)
+                    (1 | student), data = data, Hess=TRUE, nAGQ=7) 
 ```
 
 ```{r}
-sum <- summary(main.OV2 )
-cf <- sum$coefficients %>% as.data.frame() 
+cf <- reverse_thresholds(main.OV2)
 
-cf[1:4, 1] <- cf[1:4, 1]*-1
-cf[1:4, 3] <- cf[1:4, 3]*-1
-rownames(cf)[1:4] <- c("4|5", "3|4", "2|3", "1|2")
 cf %>% mutate(odd_ratio = exp(Estimate)) %>% 
   mutate_if(is.numeric, ~ round(., 3))
 
@@ -342,22 +336,19 @@ ggpredict(main.OV2, terms = c("time", "group")) %>% plot() +
 
 ```{r, eval=FALSE}
 main.OV3 <- clmm(OV3 ~ group + time + group:time +
-                    (1 | student), data = data, Hess=TRUE, nAGQ=7)
+                    (1 | student), data = data, Hess=TRUE, nAGQ=7) 
 ```
 
 ```{r}
-sum <- summary(main.OV3 )
-cf <- sum$coefficients %>% as.data.frame() 
+cf <- reverse_thresholds(main.OV3)
 
-cf[1:4, 1] <- cf[1:4, 1]*-1
-cf[1:4, 3] <- cf[1:4, 3]*-1
-rownames(cf)[1:4] <- c("4|5", "3|4", "2|3", "1|2")
 cf %>% mutate(odd_ratio = exp(Estimate)) %>% 
   mutate_if(is.numeric, ~ round(., 3))
 
 ggpredict(main.OV3, terms = c("time", "group")) %>% plot() + 
   scale_x_continuous(breaks = c(0, 1)) 
 ```
+
 
 ## MT
 
@@ -367,16 +358,12 @@ ggpredict(main.OV3, terms = c("time", "group")) %>% plot() +
 
 ```{r, eval=FALSE}
 main.MT1 <- clmm(MT1 ~ group + time + group:time +
-                   (1 | student), data = data, Hess=TRUE, nAGQ=7)
+                   (1 | student), data = data, Hess=TRUE, nAGQ=7) 
 ```
 
 ```{r}
-sum <- summary(main.MT1)
-cf <- sum$coefficients %>% as.data.frame() 
+cf <- reverse_thresholds(main.MT1)
 
-cf[1:4, 1] <- cf[1:4, 1]*-1
-cf[1:4, 3] <- cf[1:4, 3]*-1
-rownames(cf)[1:4] <- c("4|5", "3|4", "2|3", "1|2")
 cf %>% mutate(odd_ratio = exp(Estimate)) %>% 
   mutate_if(is.numeric, ~ round(., 3))
 
@@ -388,16 +375,12 @@ ggpredict(main.MT1, terms = c("time", "group")) %>% plot() +
 
 ```{r, eval=FALSE}
 main.MT2 <- clmm(MT2 ~ group + time + group:time +
-                   (1 | student), data = data, Hess=TRUE, nAGQ=7)
+                   (1 | student), data = data, Hess=TRUE, nAGQ=7) 
 ```
 
 ```{r}
-sum <- summary(main.MT2)
-cf <- sum$coefficients %>% as.data.frame() 
+cf <- reverse_thresholds(main.MT2)
 
-cf[1:4, 1] <- cf[1:4, 1]*-1
-cf[1:4, 3] <- cf[1:4, 3]*-1
-rownames(cf)[1:4] <- c("4|5", "3|4", "2|3", "1|2")
 cf %>% mutate(odd_ratio = exp(Estimate)) %>% 
   mutate_if(is.numeric, ~ round(., 3))
 
@@ -409,16 +392,12 @@ ggpredict(main.MT2, terms = c("time", "group")) %>% plot() +
 
 ```{r, eval=FALSE}
 main.MT3 <- clmm(MT3 ~ group + time + group:time +
-                   (1 | student), data = data, Hess=TRUE, nAGQ=7)
+                   (1 | student), data = data, Hess=TRUE, nAGQ=7) 
 ```
 
 ```{r}
-sum <- summary(main.MT3)
-cf <- sum$coefficients %>% as.data.frame() 
+cf <- reverse_thresholds(main.MT3)
 
-cf[1:4, 1] <- cf[1:4, 1]*-1
-cf[1:4, 3] <- cf[1:4, 3]*-1
-rownames(cf)[1:4] <- c("4|5", "3|4", "2|3", "1|2")
 cf %>% mutate(odd_ratio = exp(Estimate)) %>% 
   mutate_if(is.numeric, ~ round(., 3))
 
@@ -430,22 +409,19 @@ ggpredict(main.MT3, terms = c("time", "group")) %>% plot() +
 
 ```{r, eval=FALSE}
 main.MT4 <- clmm(MT4 ~ group + time + group:time +
-                   (1 | student), data = data, Hess=TRUE, nAGQ=7)
+                   (1 | student), data = data, Hess=TRUE, nAGQ=7) 
 ```
 
 ```{r}
-sum <- summary(main.MT4)
-cf <- sum$coefficients %>% as.data.frame() 
+cf <- reverse_thresholds(main.MT4)
 
-cf[1:4, 1] <- cf[1:4, 1]*-1
-cf[1:4, 3] <- cf[1:4, 3]*-1
-rownames(cf)[1:4] <- c("4|5", "3|4", "2|3", "1|2")
 cf %>% mutate(odd_ratio = exp(Estimate)) %>% 
   mutate_if(is.numeric, ~ round(., 3))
 
 ggpredict(main.MT4, terms = c("time", "group")) %>% plot() + 
   scale_x_continuous(breaks = c(0, 1)) 
 ```
+
 
 ## ER
 
@@ -455,16 +431,12 @@ ggpredict(main.MT4, terms = c("time", "group")) %>% plot() +
 
 ```{r, eval=FALSE}
 main.ER1 <- clmm(ER1 ~ group + time + group:time +
-                   (1 | student), data = data, Hess=TRUE, nAGQ=7)
+                   (1 | student), data = data, Hess=TRUE, nAGQ=7) 
 ```
 
 ```{r}
-sum <- summary(main.ER1)
-cf <- sum$coefficients %>% as.data.frame() 
+cf <- reverse_thresholds(main.ER1)
 
-cf[1:4, 1] <- cf[1:4, 1]*-1
-cf[1:4, 3] <- cf[1:4, 3]*-1
-rownames(cf)[1:4] <- c("4|5", "3|4", "2|3", "1|2")
 cf %>% mutate(odd_ratio = exp(Estimate)) %>% 
   mutate_if(is.numeric, ~ round(., 3))
 
@@ -476,16 +448,12 @@ ggpredict(main.ER1, terms = c("time", "group")) %>% plot() +
 
 ```{r, eval=FALSE}
 main.ER2 <- clmm(ER2 ~ group + time + group:time +
-                   (1 | student), data = data, Hess=TRUE, nAGQ=7)
+                   (1 | student), data = data, Hess=TRUE, nAGQ=7) 
 ```
 
 ```{r}
-sum <- summary(main.ER2)
-cf <- sum$coefficients %>% as.data.frame() 
+cf <- reverse_thresholds(main.ER2)
 
-cf[1:4, 1] <- cf[1:4, 1]*-1
-cf[1:4, 3] <- cf[1:4, 3]*-1
-rownames(cf)[1:4] <- c("4|5", "3|4", "2|3", "1|2")
 cf %>% mutate(odd_ratio = exp(Estimate)) %>% 
   mutate_if(is.numeric, ~ round(., 3))
 
@@ -497,16 +465,12 @@ ggpredict(main.ER2, terms = c("time", "group")) %>% plot() +
 
 ```{r, eval=FALSE}
 main.ER3 <- clmm(ER3 ~ group + time + group:time +
-                   (1 | student), data = data, Hess=TRUE, nAGQ=7)
+                   (1 | student), data = data, Hess=TRUE, nAGQ=7) 
 ```
 
 ```{r}
-sum <- summary(main.ER3)
-cf <- sum$coefficients %>% as.data.frame() 
+cf <- reverse_thresholds(main.ER3)
 
-cf[1:4, 1] <- cf[1:4, 1]*-1
-cf[1:4, 3] <- cf[1:4, 3]*-1
-rownames(cf)[1:4] <- c("4|5", "3|4", "2|3", "1|2")
 cf %>% mutate(odd_ratio = exp(Estimate)) %>% 
   mutate_if(is.numeric, ~ round(., 3))
 
@@ -518,21 +482,18 @@ ggpredict(main.ER3, terms = c("time", "group")) %>% plot() +
 
 ```{r, eval=FALSE}
 main.ER4 <- clmm(ER4 ~ group + time + group:time +
-                   (1 | student), data = data, Hess=TRUE, nAGQ=7)
+                   (1 | student), data = data, Hess=TRUE, nAGQ=7) 
 ```
 
 ```{r}
-sum <- summary(main.ER4)
-cf <- sum$coefficients %>% as.data.frame() 
+cf <- reverse_thresholds(main.ER4)
 
-cf[1:4, 1] <- cf[1:4, 1]*-1
-cf[1:4, 3] <- cf[1:4, 3]*-1
-rownames(cf)[1:4] <- c("4|5", "3|4", "2|3", "1|2")
 cf %>% mutate(odd_ratio = exp(Estimate)) %>% 
   mutate_if(is.numeric, ~ round(., 3))
 
 ggpredict(main.ER4, terms = c("time", "group")) %>% plot() + 
   scale_x_continuous(breaks = c(0, 1)) 
 ```
+
 
 :::
