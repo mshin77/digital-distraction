@@ -198,7 +198,7 @@ reverse_thresholds <- function(data) {
 cf <- reverse_thresholds(main.D3_cat)
 
 cf %>% mutate(odd_ratio = exp(Estimate)) %>% 
-  mutate_if(is.numeric, ~ round(., 3))
+  mutate_if(is.numeric, ~ round(., 2))
 
 ggpredict(main.D3_cat, terms = c("time", "group")) %>% plot() + 
   scale_x_continuous(breaks = c(0, 1)) 
@@ -219,7 +219,7 @@ main.AI1 <- clmm(AI1 ~ group + time + group:time +
 cf <- reverse_thresholds(main.AI1)
 
 cf %>% mutate(odd_ratio = exp(Estimate)) %>% 
-  mutate_if(is.numeric, ~ round(., 3))
+  mutate_if(is.numeric, ~ round(., 2))
 
 ggpredict(main.AI1, terms = c("time", "group")) %>% plot() + 
   scale_x_continuous(breaks = c(0, 1)) 
@@ -236,7 +236,7 @@ main.AI2 <- clmm(AI2 ~ group + time + group:time +
 cf <- reverse_thresholds(main.AI2)
 
 cf %>% mutate(odd_ratio = exp(Estimate)) %>% 
-  mutate_if(is.numeric, ~ round(., 3))
+  mutate_if(is.numeric, ~ round(., 2))
 
 ggpredict(main.AI2, terms = c("time", "group")) %>% plot() + 
   scale_x_continuous(breaks = c(0, 1)) 
@@ -253,7 +253,7 @@ main.AI3 <- clmm(AI3 ~ group + time + group:time +
 cf <- reverse_thresholds(main.AI3)
 
 cf %>% mutate(odd_ratio = exp(Estimate)) %>% 
-  mutate_if(is.numeric, ~ round(., 3))
+  mutate_if(is.numeric, ~ round(., 2))
 
 ggpredict(main.AI3, terms = c("time", "group")) %>% plot() + 
   scale_x_continuous(breaks = c(0, 1)) 
@@ -270,7 +270,7 @@ main.AI4 <- clmm(AI4 ~ group + time + group:time +
 cf <- reverse_thresholds(main.AI4)
 
 cf %>% mutate(odd_ratio = exp(Estimate)) %>% 
-  mutate_if(is.numeric, ~ round(., 3))
+  mutate_if(is.numeric, ~ round(., 2))
 
 ggpredict(main.AI4, terms = c("time", "group")) %>% plot() + 
   scale_x_continuous(breaks = c(0, 1)) 
@@ -287,7 +287,7 @@ main.AI5 <- clmm(AI5 ~ group + time + group:time +
 cf <- reverse_thresholds(main.AI5)
 
 cf %>% mutate(odd_ratio = exp(Estimate)) %>% 
-  mutate_if(is.numeric, ~ round(., 3))
+  mutate_if(is.numeric, ~ round(., 2))
 
 ggpredict(main.AI5, terms = c("time", "group")) %>% plot() + 
   scale_x_continuous(breaks = c(0, 1)) 
@@ -309,7 +309,7 @@ main.OV1 <- clmm(OV1 ~ group + time + group:time +
 cf <- reverse_thresholds(main.OV1)
 
 cf %>% mutate(odd_ratio = exp(Estimate)) %>% 
-  mutate_if(is.numeric, ~ round(., 3))
+  mutate_if(is.numeric, ~ round(., 2))
 
 ggpredict(main.OV1, terms = c("time", "group")) %>% plot() + 
   scale_x_continuous(breaks = c(0, 1)) 
@@ -326,7 +326,7 @@ main.OV2 <- clmm(OV2 ~ group + time + group:time +
 cf <- reverse_thresholds(main.OV2)
 
 cf %>% mutate(odd_ratio = exp(Estimate)) %>% 
-  mutate_if(is.numeric, ~ round(., 3))
+  mutate_if(is.numeric, ~ round(., 2))
 
 ggpredict(main.OV2, terms = c("time", "group")) %>% plot() + 
   scale_x_continuous(breaks = c(0, 1)) 
@@ -343,7 +343,7 @@ main.OV3 <- clmm(OV3 ~ group + time + group:time +
 cf <- reverse_thresholds(main.OV3)
 
 cf %>% mutate(odd_ratio = exp(Estimate)) %>% 
-  mutate_if(is.numeric, ~ round(., 3))
+  mutate_if(is.numeric, ~ round(., 2))
 
 ggpredict(main.OV3, terms = c("time", "group")) %>% plot() + 
   scale_x_continuous(breaks = c(0, 1)) 
@@ -365,7 +365,7 @@ main.MT1 <- clmm(MT1 ~ group + time + group:time +
 cf <- reverse_thresholds(main.MT1)
 
 cf %>% mutate(odd_ratio = exp(Estimate)) %>% 
-  mutate_if(is.numeric, ~ round(., 3))
+  mutate_if(is.numeric, ~ round(., 2))
 
 ggpredict(main.MT1, terms = c("time", "group")) %>% plot() + 
   scale_x_continuous(breaks = c(0, 1)) 
@@ -382,7 +382,7 @@ main.MT2 <- clmm(MT2 ~ group + time + group:time +
 cf <- reverse_thresholds(main.MT2)
 
 cf %>% mutate(odd_ratio = exp(Estimate)) %>% 
-  mutate_if(is.numeric, ~ round(., 3))
+  mutate_if(is.numeric, ~ round(., 2))
 
 ggpredict(main.MT2, terms = c("time", "group")) %>% plot() + 
   scale_x_continuous(breaks = c(0, 1)) 
@@ -399,7 +399,7 @@ main.MT3 <- clmm(MT3 ~ group + time + group:time +
 cf <- reverse_thresholds(main.MT3)
 
 cf %>% mutate(odd_ratio = exp(Estimate)) %>% 
-  mutate_if(is.numeric, ~ round(., 3))
+  mutate_if(is.numeric, ~ round(., 2))
 
 ggpredict(main.MT3, terms = c("time", "group")) %>% plot() + 
   scale_x_continuous(breaks = c(0, 1)) 
@@ -416,7 +416,7 @@ main.MT4 <- clmm(MT4 ~ group + time + group:time +
 cf <- reverse_thresholds(main.MT4)
 
 cf %>% mutate(odd_ratio = exp(Estimate)) %>% 
-  mutate_if(is.numeric, ~ round(., 3))
+  mutate_if(is.numeric, ~ round(., 2))
 
 ggpredict(main.MT4, terms = c("time", "group")) %>% plot() + 
   scale_x_continuous(breaks = c(0, 1)) 
@@ -438,7 +438,7 @@ main.ER1 <- clmm(ER1 ~ group + time + group:time +
 cf <- reverse_thresholds(main.ER1)
 
 cf %>% mutate(odd_ratio = exp(Estimate)) %>% 
-  mutate_if(is.numeric, ~ round(., 3))
+  mutate_if(is.numeric, ~ round(., 2))
 
 ggpredict(main.ER1, terms = c("time", "group")) %>% plot() + 
   scale_x_continuous(breaks = c(0, 1)) 
@@ -455,7 +455,7 @@ main.ER2 <- clmm(ER2 ~ group + time + group:time +
 cf <- reverse_thresholds(main.ER2)
 
 cf %>% mutate(odd_ratio = exp(Estimate)) %>% 
-  mutate_if(is.numeric, ~ round(., 3))
+  mutate_if(is.numeric, ~ round(., 2))
 
 ggpredict(main.ER2, terms = c("time", "group")) %>% plot() + 
   scale_x_continuous(breaks = c(0, 1)) 
@@ -472,7 +472,7 @@ main.ER3 <- clmm(ER3 ~ group + time + group:time +
 cf <- reverse_thresholds(main.ER3)
 
 cf %>% mutate(odd_ratio = exp(Estimate)) %>% 
-  mutate_if(is.numeric, ~ round(., 3))
+  mutate_if(is.numeric, ~ round(., 2))
 
 ggpredict(main.ER3, terms = c("time", "group")) %>% plot() + 
   scale_x_continuous(breaks = c(0, 1)) 
@@ -489,7 +489,7 @@ main.ER4 <- clmm(ER4 ~ group + time + group:time +
 cf <- reverse_thresholds(main.ER4)
 
 cf %>% mutate(odd_ratio = exp(Estimate)) %>% 
-  mutate_if(is.numeric, ~ round(., 3))
+  mutate_if(is.numeric, ~ round(., 2))
 
 ggpredict(main.ER4, terms = c("time", "group")) %>% plot() + 
   scale_x_continuous(breaks = c(0, 1)) 
