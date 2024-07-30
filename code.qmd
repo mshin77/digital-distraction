@@ -13,11 +13,11 @@ knitr::opts_chunk$set(warning = FALSE, error = FALSE, message = FALSE)
 
 ::: panel-tabset
 
-## Internal Consistency 
-
-#### Set-Up
+## Set-Up
 
 ```{r}
+#| code-fold: false
+
 suppressPackageStartupMessages({
   library(readxl)
   library(gtsummary)
@@ -35,79 +35,6 @@ suppressPackageStartupMessages({
 })
 
 load("data/digital_distraction_data.RData")
-```
-
-#### Calculate Cronbach's alpha 
-
-```{r, eval=FALSE}
-calculate_alpha <- function(data, prefix) {
-  category_cols <- grep(paste0("^", prefix), colnames(data), value = TRUE)
-  alpha_result <- alpha(data[, category_cols])
-  cat(paste("Cronbach's alpha for", prefix, ":", format(alpha_result$total$raw_alpha, digits = 2, nsmall = 2)), "\n")
-  return(alpha_result)
-}
-
-data_filtered_pre <- data %>% filter(time == "0")
-
-alpha_AI_pre <- calculate_alpha(data_filtered_pre, "AI")
-alpha_OV_pre <- calculate_alpha(data_filtered_pre, "OV")
-alpha_MT_pre <- calculate_alpha(data_filtered_pre, "MT")
-alpha_ER_pre <- calculate_alpha(data_filtered_pre, "ER")
-
-data_filtered_post <- data %>% filter(time == "1")
-
-alpha_AI_post <- calculate_alpha(data_filtered_post, "AI")
-alpha_OV_post <- calculate_alpha(data_filtered_post, "OV")
-alpha_MT_post <- calculate_alpha(data_filtered_post, "MT")
-alpha_ER_post <- calculate_alpha(data_filtered_post, "ER")
-```
-
-#### Attention Impulsiveness (AI)
-
-```{r}
-#| code-fold: false
-alpha_AI_pre$total$raw_alpha %>% round(2)
-```
-
-```{r}
-#| code-fold: false
-alpha_AI_post$total$raw_alpha %>% round(2)
-```
-
-#### Online Vigilance (OV)
-
-```{r}
-#| code-fold: false
-alpha_OV_pre$total$raw_alpha %>% round(2)
-```
-
-```{r}
-#| code-fold: false
-alpha_OV_post$total$raw_alpha %>% round(2)
-```
-
-#### Multitasking (MT)
-
-```{r}
-#| code-fold: false
-alpha_MT_pre$total$raw_alpha %>% round(2)
-```
-
-```{r}
-#| code-fold: false
-alpha_MT_post$total$raw_alpha %>% round(2)
-```
-
-#### Emotion Regulation (ER)
-
-```{r}
-#| code-fold: false
-alpha_ER_pre$total$raw_alpha %>% round(2)
-```
-
-```{r}
-#| code-fold: false
-alpha_ER_post$total$raw_alpha %>% round(2)
 ```
 
 ## Frequency Table 
