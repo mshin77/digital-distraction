@@ -104,12 +104,6 @@ main.D3_cat <- clmm(D3_cat ~ group + time + group:time +
 ```{r}
 reverse_thresholds <- function(data) {
   
-  coef_labels <- c("intercept (Y>1)", "intercept (Y>2)", "intercept (Y>3)", "intercept (Y>4)")
-
-    if (length(coef_labels) != 4) {
-    stop("coef_labels must have exactly 4 elements.")
-  }
-  
   sum <- summary(data)
   
   cf <- as.data.frame(sum$coefficients)
@@ -117,7 +111,7 @@ reverse_thresholds <- function(data) {
   cf[1:4, 1] <- cf[1:4, 1] * -1
   cf[1:4, 3] <- cf[1:4, 3] * -1
   
-  rownames(cf)[1:4] <- coef_labels
+  rownames(cf)[1:4] <- c("intercept (Y>1)", "intercept (Y>2)", "intercept (Y>3)", "intercept (Y>4)")
   
   return(cf)
 }
