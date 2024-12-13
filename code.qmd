@@ -11,7 +11,7 @@ format:
 knitr::opts_chunk$set(warning = FALSE, error = FALSE, message = FALSE)
 ```
 
-The website contains outputs and code used to analyze numeric and ordinal data in Park et al. (in press). Reproducible materials are also posted at the [Github](https://github.com/mshin77/digital-distraction). 
+The website contains outputs and code used to analyze numeric and ordinal data in Park et al. (in press). Reproducible materials are also posted at the at the [Center for Open Science](https://doi.org/10.17605/OSF.IO/JWVU4) and [Github](https://github.com/mshin77/digital-distraction). 
 
 Park, J., Paxtle-Granjeno, J., Ok, M. W., Shin, M., & Wilson, E. (in press). Preventing digital distraction in secondary classrooms: A quasi-experimental study. *Computers & Education* 
 
